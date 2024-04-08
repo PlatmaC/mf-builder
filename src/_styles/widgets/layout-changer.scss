@@ -1,0 +1,61 @@
+@import '../colors.scss';
+
+.layout-changer {
+  &__wrapper {
+    display: flex;
+    gap: 5px;
+    flex-direction: column;
+  }
+
+  &__container {
+    display: flex;
+    gap: 3px;
+    align-items: center;
+  }
+
+  &__label {
+    font-size: 10px;
+    user-select: none;
+  }
+
+  &__input {
+    label {
+      min-width: 33px;
+    }
+
+    input {
+      min-width: 74px;
+      max-width: 74px;
+    }
+  }
+
+  &__button {
+    outline: none;
+    user-select: none;
+    border: none;
+    font-size: 12px;
+    line-height: 12px;
+    padding: 3px 5px;
+    background-color: $color-light-indigo-03;
+    color: $color-light-indigo-09;
+    transition: all 0.2s;
+
+    &--margin {
+      margin-top: 8px;
+    }
+
+    &--selected,
+    &--hovered:hover {
+      background-color: $color-light-indigo-09;
+      color: $color-light-indigo-03;
+    }
+  }
+
+  &__icon {
+    min-width: 16px;
+
+    path {
+      fill: $icon-grey;
+    }
+  }
+}

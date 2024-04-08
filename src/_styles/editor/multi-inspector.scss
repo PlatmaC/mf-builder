@@ -1,0 +1,80 @@
+@import '../colors.scss';
+
+.multi-inspector {
+  &__wrapper {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    gap: 10px;
+  }
+
+  &__cross {
+    position: absolute;
+    cursor: pointer;
+    stroke: $icon-grey;
+    right: 8px;
+    top: 15px;
+    transition: all 0.2s;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+
+  &__header {
+    font-weight: 400;
+    margin: 0;
+  }
+
+  &__container {
+    display: grid;
+    grid-template-areas:
+      'headline headline'
+      'horizontal-receptacle vertical-receptacle';
+    gap: 5px;
+  }
+
+  &__headline {
+    grid-area: headline;
+    font-size: 12px;
+    margin: 0;
+  }
+
+  &__receptacle {
+    display: flex;
+    gap: 2px;
+    align-items: center;
+
+    &:nth-child(2) {
+      grid-area: horizontal-receptacle;
+    }
+
+    &:nth-child(3) {
+      grid-area: vertical-receptacle;
+    }
+  }
+
+  &__title {
+    font-weight: 400;
+    margin: 0;
+  }
+
+  &__icon {
+    cursor: pointer;
+    stroke: $icon-grey;
+    transition: all 0.2s;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+
+    &--rotated {
+      transform: rotate(90deg);
+
+      &:hover {
+        transform: rotate(90deg) scale(1.05);
+      }
+    }
+  }
+}
