@@ -1,4 +1,4 @@
-## Instance of the Frontend Part of the ToolJet Framework
+## Instance of the Frontend Part of the ToolJet Framework - GNU Affero General Public License v3.0 [click here](https://github.com/ToolJet/ToolJet/blob/develop/LICENSE).
 
 This is a fork of the open-source frontend part of the [ToolJet](https://github.com/ToolJet/ToolJet) low-code framework.
 We have made it to incorporate a small part of its open-source code into our project.
