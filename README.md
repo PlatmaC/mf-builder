@@ -1,4 +1,4 @@
-## Instance of the Frontend Part of the ToolJet Framework - GNU Affero General Public License v3.0 [click here](https://github.com/ToolJet/ToolJet/blob/develop/LICENSE).
+## Instance of the Frontend Part of the ToolJet Framework - GNU Affero General Public License v3.0. [click here](https://github.com/ToolJet/ToolJet/blob/develop/LICENSE)
 
 This is a fork of the open-source frontend part of the [ToolJet](https://github.com/ToolJet/ToolJet) low-code framework.
 We have made it to incorporate a small part of its open-source code into our project.
@@ -22,11 +22,11 @@ This license ensures that we maintain transparency and uphold the principles of 
 - Relations/lookup type to the built-in database
 - Generation column from current data in Table
 
-#### Bug Fixes
+#### Bug Fixed
 
 - Asynchronous event handling
 - Selection widget in modals
-- Dilters in the query builder
+- Filters in the query builder
 - Column editing within the built-in database
 - Row click/select event into Table
 - PDF widget rendering
