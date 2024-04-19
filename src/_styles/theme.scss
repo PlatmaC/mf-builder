@@ -2643,9 +2643,9 @@ hr {
   }
 }
 
-.draggable-box-in-editor:hover {
-  z-index: 3 !important;
-}
+// .draggable-box-in-editor:hover {
+//   z-index: 999999 !important;
+// }
 
 .modal-content {
   .config-handle {
@@ -3566,9 +3566,9 @@ input[type='text'] {
   display: none;
 }
 
-.draggable-box:focus-within {
-  z-index: 2 !important;
-}
+// .draggable-box:focus-within {
+//   z-index: 99999 !important;
+// }
 
 .cursor-wait {
   cursor: wait;
@@ -7589,6 +7589,14 @@ tbody {
 .canvas-area > .modal-backdrop {
   width: 100% !important;
   height: 100% !important;
+}
+
+.canvas-area.canvas-area__editor > .modal-backdrop,
+.canvas-area.canvas-area__editor > .modal {
+  width: calc(100% - 348px) !important;
+  top: 117px;
+  left: 48px;
+  right: 300px;
 }
 
 .ds-delete-btn {

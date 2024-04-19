@@ -1,9 +1,13 @@
-import React, { useRef, useState, useEffect } from 'react';
 import { default as BootstrapModal } from 'react-bootstrap/Modal';
+import { useRef, useState, useEffect } from 'react';
+import Selecto from 'react-selecto';
+import tinycolor from 'tinycolor2';
+
+import { useAppGlobalStore } from '@/_stores/appGlobalStore';
+
 import { SubCustomDragLayer } from '../SubCustomDragLayer';
 import { SubContainer } from '../SubContainer';
 import { ConfigHandle } from '../ConfigHandle';
-import tinycolor from 'tinycolor2';
 
 export const Modal = function Modal({
   id,
@@ -20,7 +24,6 @@ export const Modal = function Modal({
   height,
 }) {
   const [showModal, setShowModal] = useState(false);
-
   const {
     closeOnClickingOutside = false,
     hideOnEsc,
@@ -51,6 +54,7 @@ export const Modal = function Modal({
     async function () {
       setExposedVariable('show', true);
       setShowModal(true);
+      useAppGlobalStore.getState().actions.setIsAnyModalOpen(true);
     },
     [setShowModal]
   );
@@ -59,6 +63,7 @@ export const Modal = function Modal({
     async function () {
       setShowModal(false);
       setExposedVariable('show', false);
+      useAppGlobalStore.getState().actions.setIsAnyModalOpen(false);
     },
     [setShowModal]
   );
@@ -66,6 +71,7 @@ export const Modal = function Modal({
   useEffect(() => {
     const canShowModal = exposedVariables.show ?? false;
     setShowModal(exposedVariables.show ?? false);
+    useAppGlobalStore.getState().actions.setIsAnyModalOpen(exposedVariables.show ?? false);
     fireEvent(canShowModal ? 'onOpen' : 'onClose');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [exposedVariables.show]);
@@ -126,6 +132,7 @@ export const Modal = function Modal({
 
   function hideModal() {
     setShowModal(false);
+    useAppGlobalStore.getState().actions.setIsAnyModalOpen(false);
     setExposedVariable('show', false).then(() => fireEvent('onClose'));
   }
   const backwardCompatibilityCheck = height == '34' || modalHeight != undefined ? true : false;
@@ -182,6 +189,7 @@ export const Modal = function Modal({
           onClick={(event) => {
             event.stopPropagation();
             setShowModal(true);
+            useAppGlobalStore.getState().actions.setIsAnyModalOpen(true);
             setExposedVariable('show', true);
           }}
           data-cy={`${dataCy}-launch-button`}
@@ -203,6 +211,7 @@ export const Modal = function Modal({
         backdrop={'static'}
         scrollable={true}
         modalProps={{
+          containerProps,
           customStyles,
           parentRef,
           id,
@@ -239,6 +248,7 @@ export const Modal = function Modal({
 };
 
 const Component = ({ children, ...restProps }) => {
+  const selectionRef = useRef();
   const {
     customStyles,
     parentRef,
@@ -251,6 +261,7 @@ const Component = ({ children, ...restProps }) => {
     showConfigHandler,
     removeComponent,
     setSelected,
+    containerProps,
   } = restProps['modalProps'];
 
   return (
@@ -300,8 +311,32 @@ const Component = ({ children, ...restProps }) => {
           )}
         </BootstrapModal.Header>
       )}
-      <BootstrapModal.Body style={{ ...customStyles.modalBody }} ref={parentRef} id={id} data-cy={`modal-body`}>
+      <BootstrapModal.Body
+        className="modal-canvas-container"
+        style={{ ...customStyles.modalBody }}
+        ref={parentRef}
+        id={id}
+        data-cy={`modal-body`}
+        {...(containerProps.mode === 'edit' && { onMouseUp: (e) => containerProps.onCanvasMouseUp(e, true) })}
+      >
         {children}
+        {containerProps.mode === 'edit' && (
+          <Selecto
+            onSelectStart={containerProps.onSelectStart}
+            onSelectEnd={(e) => containerProps.onSelectEnd(e, true, '.modal-canvas-container')}
+            onDragStart={containerProps.onDragStart}
+            onDragEnd={containerProps.onDragEnd}
+            onSelect={containerProps.onSelect}
+            onDrag={containerProps.onDrag}
+            container={'.modal-canvas-container'}
+            dragContainer={'.modal-canvas-container'}
+            selectableTargets={['.react-draggable']}
+            toggleContinueSelect={['shift']}
+            selectByClick={true}
+            ref={selectionRef}
+            hitRate={0}
+          />
+        )}
       </BootstrapModal.Body>
     </BootstrapModal>
   );

@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { TooljetDatabaseContext } from '@/TooljetDatabase/index';
-import { uniqueId } from 'lodash';
+import { v4 as uuidv4 } from 'uuid';
 import { CodeHinter } from '@/Editor/CodeBuilder/CodeHinter';
 import Select from '@/_ui/Select';
 import { operators } from '@/TooljetDatabase/constants';
@@ -17,7 +17,7 @@ export const DeleteRows = React.memo(({ currentState, darkMode }) => {
   function addNewFilterConditionPair() {
     const existingFilters = deleteRowsOptions?.where_filters ? Object.values(deleteRowsOptions?.where_filters) : [];
     const emptyFilter = { column: '', operator: '', value: '' };
-    const newFilter = { ...emptyFilter, ...{ id: uniqueId() } };
+    const newFilter = { ...emptyFilter, ...{ id: uuidv4() } };
     handleWhereFiltersChange({ ...existingFilters, ...{ [newFilter.id]: newFilter } });
   }
 

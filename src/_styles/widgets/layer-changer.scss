@@ -1,0 +1,11 @@
+@import '../colors.scss';
+
+.layer-changer {
+  &__wrapper {
+    display: grid;
+    gap: 0 8px;
+    grid-template:
+      'b b'
+      'b b';
+  }
+}

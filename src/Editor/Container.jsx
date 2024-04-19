@@ -1,8 +1,9 @@
 /* eslint-disable import/no-named-as-default */
 import { useCallback, useState, useEffect, useRef, useMemo } from 'react';
-import { shallow } from 'zustand/shallow';
 import { useDrop, useDragLayer } from 'react-dnd';
+import { OverlayTrigger, Popover } from 'react-bootstrap';
 import { useHotkeys } from 'react-hotkeys-hook';
+import { shallow } from 'zustand/shallow';
 import update from 'immutability-helper';
 const produce = require('immer').default;
 import cx from 'classnames';
@@ -16,10 +17,15 @@ import { commentsService } from '@/_services';
 import useRouter from '@/_hooks/use-router';
 import Spinner from '@/_ui/Spinner';
 
-import { ItemTypes } from './ItemTypes';
-import { DraggableBox } from './DraggableBox';
 import { componentTypes } from './WidgetManager/components';
+import { DraggableBox } from './DraggableBox';
+import { ContextMenu } from './ContextMenu';
+import { ItemTypes } from './ItemTypes';
 import Comments from './Comments';
+
+import '@/_styles/editor/context-menu.scss';
+
+const defaultContextMenuState = { isVisible: false, widgetIds: [], widgetId: null, y: null, x: null };
 
 export const Container = ({
   canvasWidth,
@@ -38,6 +44,7 @@ export const Container = ({
   zoomLevel,
   currentLayout,
   removeComponent,
+  removeComponents,
   deviceWindowWidth,
   selectedComponents,
   darkMode,
@@ -49,6 +56,13 @@ export const Container = ({
   hoveredComponent,
   sideBarDebugger,
   currentPageId,
+  onCanvasMouseUp,
+  onSelectStart,
+  onSelectEnd,
+  onDragStart,
+  onDragEnd,
+  onSelect,
+  onDrag,
 }) => {
   const styles = {
     width: currentLayout === 'mobile' ? deviceWindowWidth : '100%',
@@ -69,6 +83,7 @@ export const Container = ({
     shallow
   );
 
+  const [contextMenuVisibility, setContextMenuVisibility] = useState(defaultContextMenuState);
   const [boxes, setBoxes] = useState(components);
   const [isDragging, setIsDragging] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
@@ -106,11 +121,11 @@ export const Container = ({
   useEffect(() => {
     const handleClick = (e) => {
       if (canvasRef.current.contains(e.target) || document.getElementById('modal-container')?.contains(e.target)) {
-        const elem = e.target.closest('.real-canvas').getAttribute('id');
+        const elem = e.target.closest('.real-canvas')?.getAttribute('id');
         if (elem === 'real-canvas') {
           focusedParentIdRef.current = undefined;
         } else {
-          const parentId = elem.split('canvas-')[1];
+          const parentId = elem?.split('canvas-')[1];
           focusedParentIdRef.current = parentId;
         }
         if (!isContainerFocused) {
@@ -221,7 +236,10 @@ export const Container = ({
           canvasBoundingRect,
           item.currentLayout,
           snapToGrid,
-          zoomLevel
+          zoomLevel,
+          false,
+          false,
+          currentState
         );
 
         setBoxes({
@@ -456,19 +474,40 @@ export const Container = ({
     return componentWithChildren;
   }, [components]);
 
-  return (
+  const showContextMenu = (e) => {
+    const widgetElement = e.target.closest('[widgetid]');
+    if (widgetElement) {
+      e.preventDefault();
+      const canvasSize = canvasRef.current.getBoundingClientRect();
+      const widgetId = widgetElement?.getAttribute('widgetid');
+      const newState = { isVisible: true, x: canvasSize.x - e.clientX, y: e.clientY - canvasSize.y, widgetId };
+      if (selectedComponents.length > 0) {
+        const widgetIds = selectedComponents.map((component) => component.id);
+        const isClickedAmongSelectedComponent = widgetIds.some((componentId) => componentId === widgetId);
+        if (isClickedAmongSelectedComponent) setContextMenuVisibility({ ...newState, widgetIds });
+        else {
+          setSelectedComponent(widgetId, boxes[widgetId], false);
+          setContextMenuVisibility({ ...newState, widgetIds: [widgetId] });
+        }
+      } else {
+        setSelectedComponent(widgetId, boxes[widgetId], false);
+        setContextMenuVisibility((prevState) => ({ ...prevState, ...newState }));
+      }
+    } else setContextMenuVisibility(defaultContextMenuState);
+  };
+
+  const renderContainer = () => (
     <div
       {...(config.COMMENT_FEATURE_ENABLE && showComments && { onClick: handleAddThread })}
+      onContextMenu={mode === 'edit' ? showContextMenu : undefined}
       ref={(el) => {
         canvasRef.current = el;
         drop(el);
       }}
       style={styles}
-      className={cx('real-canvas', {
-        'show-grid': isDragging || isResizing,
-      })}
-      id="real-canvas"
+      className={cx('real-canvas', { 'show-grid': isDragging || isResizing })}
       data-cy="real-canvas"
+      id="real-canvas"
     >
       {config.COMMENT_FEATURE_ENABLE && showComments && (
         <>
@@ -536,6 +575,13 @@ export const Container = ({
               isMultipleComponentsSelected={selectedComponents?.length > 1 ? true : false}
               childComponents={childComponents[key]}
               containerProps={{
+                onCanvasMouseUp,
+                onSelectStart,
+                onSelectEnd,
+                onDragStart,
+                onDragEnd,
+                onSelect,
+                onDrag,
                 mode,
                 snapToGrid,
                 onEvent,
@@ -576,5 +622,40 @@ export const Container = ({
         </div>
       )}
     </div>
+  );
+
+  const closeContextMenu = () => contextMenuVisibility.isVisible && setContextMenuVisibility(defaultContextMenuState);
+
+  return mode === 'edit' ? (
+    <OverlayTrigger
+      offset={[contextMenuVisibility.y, contextMenuVisibility.x]}
+      show={contextMenuVisibility.isVisible}
+      onToggle={closeContextMenu}
+      overlay={
+        <Popover className={cx('editor__context-menu')} id={contextMenuVisibility.widgetId}>
+          <ContextMenu
+            {...{
+              multiWidgetIds: contextMenuVisibility.widgetIds,
+              widgetId: contextMenuVisibility.widgetId,
+              appDefinitionChanged,
+              closeContextMenu,
+              removeComponents,
+              removeComponent,
+              currentPageId,
+              appDefinition,
+              currentState,
+            }}
+          />
+        </Popover>
+      }
+      placement={'left-start'}
+      rootClose={true}
+      trigger="click"
+      delay={1000}
+    >
+      {renderContainer()}
+    </OverlayTrigger>
+  ) : (
+    renderContainer()
   );
 };

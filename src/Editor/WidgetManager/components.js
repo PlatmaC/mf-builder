@@ -4,6 +4,7 @@ const universalProps = {
   properties: {},
   general: {
     tooltip: { type: 'code', displayName: 'Tooltip', validation: { schema: { type: 'string' } } },
+    zIndex: { type: 'layering', displayName: 'Z-index' },
   },
   others: {},
   events: {},
@@ -16,9 +17,8 @@ const universalProps = {
     others: {},
     events: [],
     styles: {},
-    generalStyles: {
-      boxShadow: { value: '0px 0px 0px 0px #00000040' },
-    },
+    general: { zIndex: { value: 1 } },
+    generalStyles: { boxShadow: { value: '0px 0px 0px 0px #00000040' } },
   },
 };
 

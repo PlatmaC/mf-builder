@@ -423,6 +423,7 @@ export function CodeHinter({
             appDefinition={appDefinition}
             currentLayout={currentLayout}
             currentPageId={currentPageId}
+            currentState={currentState}
             componentDefinitionChanged={componentDefinitionChanged}
             onChange={(value) => {
               if (value !== currentValue) {

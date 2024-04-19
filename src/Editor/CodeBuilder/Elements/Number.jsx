@@ -1,10 +1,15 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import throttle from 'lodash/throttle';
 import FxButton from './FxButton';
 
 export const Number = ({ value, onChange, forceCodeBox, cyLabel, withFxButton = true }) => {
   const [number, setNumber] = useState(value ? value : 0);
   const darkMode = localStorage.getItem('darkMode') === 'true';
+
+  useEffect(() => {
+    if (value !== number) setNumber(value);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedHandleChange = useMemo(() => throttle((value) => onChange(`{{${value}}}`), 100), []);

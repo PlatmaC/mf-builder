@@ -1520,7 +1520,8 @@ export const addNewWidgetToTheEditor = (
   shouldSnapToGrid,
   zoomLevel,
   isInSubContainer = false,
-  addingDefault = false
+  addingDefault = false,
+  currentState
 ) => {
   const anotherLayout = {
     desktop: 'mobile',
@@ -1529,6 +1530,16 @@ export const addNewWidgetToTheEditor = (
 
   const componentMetaData = _.cloneDeep(componentMeta);
   const componentData = _.cloneDeep(componentMetaData);
+  const componentValues = Object.values(currentComponents);
+  if (componentValues.length > 0) {
+    const maxZIndex = componentValues.reduce((accum, current) => {
+      const resolvedCurrentValue = Number(
+        resolveReferences(current.component.definition.general.zIndex?.value, currentState)
+      );
+      return resolvedCurrentValue > accum ? resolvedCurrentValue : accum;
+    }, 1);
+    _.set(componentData, `definition.general.zIndex.value`, maxZIndex + 1);
+  }
   componentData.name = computeComponentName(componentData.component, currentComponents);
 
   const defaultWidth = isInSubContainer

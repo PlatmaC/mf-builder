@@ -50,6 +50,13 @@ export const SubContainer = ({
   height = '100%',
   currentPageId,
   childComponents = null,
+  onCanvasMouseUp,
+  onSelectStart,
+  onSelectEnd,
+  onDragStart,
+  onDragEnd,
+  onSelect,
+  onDrag,
 }) => {
   //Todo add custom resolve vars for other widgets too
   const mounted = useMounted();
@@ -193,7 +200,8 @@ export const SubContainer = ({
             snapToGrid,
             zoomLevel,
             true,
-            true
+            true,
+            currentState
           );
 
           if (_.isArray(events) && events.length > 0) {
@@ -336,7 +344,9 @@ export const SubContainer = ({
           item.currentLayout,
           snapToGrid,
           zoomLevel,
-          true
+          true,
+          false,
+          currentState
         );
 
         setBoxes({
@@ -600,6 +610,13 @@ export const SubContainer = ({
                   addDefaultChildren,
                   currentPageId,
                   childComponents,
+                  onCanvasMouseUp,
+                  onSelectStart,
+                  onSelectEnd,
+                  onDragStart,
+                  onDragEnd,
+                  onSelect,
+                  onDrag,
                 }}
               />
             );

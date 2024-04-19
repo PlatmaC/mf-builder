@@ -6,6 +6,7 @@ import {
   ComponentDefinitionChangedType,
   AppDefinitionChangeType,
   AppDefinitionType,
+  CurrentStateType,
   LayoutsEnum,
   LayoutsType,
 } from './AppTypes';
@@ -20,6 +21,7 @@ export type ElementsToRenderPropsType = {
   paramUpdated: ParamUpdatedType;
   onChange: (value: Any) => void;
   meta: InspectorElementMetaType;
+  currentState: CurrentStateType;
   currentLayout: LayoutsEnum;
   forceCodeBox: AnyFunction;
   currentPageId: string;
@@ -178,4 +180,5 @@ export enum InspectorElementTypeEnum {
   'toggleAfterTime' = 'toggleAfterTime',
   'intervalSelect' = 'intervalSelect',
   'daySelector' = 'daySelector',
+  'layering' = 'layering',
 }

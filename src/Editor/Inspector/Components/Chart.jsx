@@ -217,6 +217,32 @@ class Chart extends React.Component {
     }
 
     items.push({
+      title: 'General',
+      isOpen: true,
+      children: (
+        <>
+          {renderElement(
+            component,
+            componentMeta,
+            layoutPropertyChanged,
+            dataQueries,
+            'zIndex',
+            'general',
+            currentState,
+            allComponents,
+            darkMode,
+            multyParamsUpdater,
+            appDefinitionChanged,
+            currentLayout,
+            appDefinition,
+            currentPageId,
+            componentDefinitionChanged
+          )}
+        </>
+      ),
+    });
+
+    items.push({
       title: 'Layout',
       isOpen: true,
       children: (

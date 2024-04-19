@@ -171,7 +171,31 @@ export function Icon({ componentMeta, darkMode, ...restProps }) {
           'tooltip',
           'general',
           currentState,
-          allComponents
+          allComponents,
+          darkMode,
+          multyParamsUpdater,
+          appDefinitionChanged,
+          currentLayout,
+          appDefinition,
+          currentPageId,
+          componentDefinitionChanged
+        )}
+        {renderElement(
+          component,
+          componentMeta,
+          layoutPropertyChanged,
+          dataQueries,
+          'zIndex',
+          'general',
+          currentState,
+          allComponents,
+          darkMode,
+          multyParamsUpdater,
+          appDefinitionChanged,
+          currentLayout,
+          appDefinition,
+          currentPageId,
+          componentDefinitionChanged
         )}
       </>
     ),

@@ -1,14 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from 'react';
-import cx from 'classnames';
-import { useDrag } from 'react-dnd';
-import { ItemTypes } from './ItemTypes';
 import { getEmptyImage } from 'react-dnd-html5-backend';
-import { Box } from './Box';
-import { ConfigHandle } from './ConfigHandle';
+import { useEffect, useState } from 'react';
+import { useDrag } from 'react-dnd';
 import { Rnd } from 'react-rnd';
+import cx from 'classnames';
+
 import { resolveWidgetFieldValue } from '@/_helpers/utils';
+
+import { resolveGeneralProperties } from './component-properties-resolution';
+import { ConfigHandle } from './ConfigHandle';
 import ErrorBoundary from './ErrorBoundary';
+import { ItemTypes } from './ItemTypes';
+import { Box } from './Box';
 
 const resizerClasses = {
   topRight: 'top-right',
@@ -48,10 +51,11 @@ function computeWidth(currentLayoutOptions) {
   return `${currentLayoutOptions?.width}%`;
 }
 
-function getStyles(isDragging, isSelectedComponent) {
+function getStyles(isDragging, _isSelectedComponent, component, currentState, customResolvables) {
+  const resolvedGeneralProperties = resolveGeneralProperties(component, currentState, null, customResolvables);
   return {
     position: 'absolute',
-    zIndex: isSelectedComponent ? 2 : 1,
+    zIndex: resolvedGeneralProperties.zIndex,
     // IE fallback: hide the real node using CSS when dragging
     // because IE will ignore our custom "empty image" drag preview.
     opacity: isDragging ? 0 : 1,
@@ -209,16 +213,13 @@ export const DraggableBox = function DraggableBox({
             }
           }}
           onMouseLeave={() => onComponentHover?.(false)}
-          style={getStyles(isDragging, isSelectedComponent)}
+          style={getStyles(isDragging, isSelectedComponent, component, currentState, customResolvables)}
         >
           <Rnd
             style={{ ...style }}
             resizeGrid={[gridWidth, 10]}
             dragGrid={[gridWidth, 10]}
-            size={{
-              width: width,
-              height: layoutData.height,
-            }}
+            size={{ width: width, height: layoutData.height }}
             position={{
               x: layoutData ? (layoutData.left * canvasWidth) / 100 : 0,
               y: layoutData ? layoutData.top : 0,

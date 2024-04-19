@@ -160,6 +160,23 @@ export const baseComponentProperties = (
           currentState,
           allComponents
         )}
+        {renderElement(
+          component,
+          componentMeta,
+          layoutPropertyChanged,
+          dataQueries,
+          'zIndex',
+          'general',
+          currentState,
+          allComponents,
+          darkMode,
+          multyParamsUpdater,
+          appDefinitionChanged,
+          currentLayout,
+          appDefinition,
+          currentPageId,
+          componentDefinitionChanged
+        )}
       </>
     ),
   });

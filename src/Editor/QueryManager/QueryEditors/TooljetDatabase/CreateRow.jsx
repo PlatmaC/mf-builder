@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { CodeHinter } from '@/Editor/CodeBuilder/CodeHinter';
 import { TooljetDatabaseContext } from '@/TooljetDatabase/index';
 import Select from '@/_ui/Select';
-import { uniqueId } from 'lodash';
+import { v4 as uuidv4 } from 'uuid';
 import { useMounted } from '@/_hooks/use-mount';
 
 export const CreateRow = React.memo(({ currentState, optionchanged, options, darkMode }) => {
@@ -35,7 +35,7 @@ export const CreateRow = React.memo(({ currentState, optionchanged, options, dar
 
   function addNewColumnOptionsPair() {
     if (Object.keys(columnOptions).length !== columns.length)
-      handleColumnOptionChange({ ...columnOptions, [uniqueId()]: { column: '', value: '' } });
+      handleColumnOptionChange({ ...columnOptions, [uuidv4()]: { column: '', value: '' } });
   }
 
   return (

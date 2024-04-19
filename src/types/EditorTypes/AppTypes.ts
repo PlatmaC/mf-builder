@@ -54,6 +54,13 @@ export type ContainerPropsType = {
   sideBarDebugger: SideBarDebuggerType;
   snapToGrid: boolean;
   zoomLevel: number;
+  onCanvasMouseUp: AnyFunction;
+  onSelectStart: AnyFunction;
+  onSelectEnd: AnyFunction;
+  onDragStart: AnyFunction;
+  onDragEnd: AnyFunction;
+  onSelect: AnyFunction;
+  onDrag: AnyFunction;
 };
 
 export type OnComponentHoverType = AnyFunction;
@@ -105,10 +112,14 @@ export type SideBarDebuggerType = {
   flush: AnyFunction;
 };
 
-export type AppDefinitionComponentsType = Record<
-  string,
-  { component: ComponentType; layouts: LayoutsType; withDefaultChildren: boolean; parent: ParentType }
->;
+export type ComponentInfoType = {
+  component: ComponentType;
+  layouts: LayoutsType;
+  withDefaultChildren: boolean;
+  parent: ParentType;
+};
+
+export type AppDefinitionComponentsType = Record<string, ComponentInfoType>;
 
 export type LayoutsType = {
   [LayoutsEnum.desktop]: PositionsType;

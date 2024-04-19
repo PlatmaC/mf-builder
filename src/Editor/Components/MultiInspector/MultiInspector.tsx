@@ -15,6 +15,7 @@ import {
 import { BulkGridBinder } from './BulkGridBinder/BulkGridBinder';
 import { BulkPositioner } from './BulkPositioner/BulkPositioner';
 import { useAppVersionStore } from '@/_stores/appVersionStore';
+import { BulkLayering } from './BulkLayering/BulkLayering';
 import { BulkResizer } from './BulkResizer/BulkResizer';
 import { Leveler } from './Leveler/Leveler';
 
@@ -49,6 +50,7 @@ export const MultiInspector = memo((props: MultiInspectorDrillingPropsType) => {
         <BulkPositioner {...props} />
         <BulkGridBinder {...props} />
         <BulkResizer {...props} />
+        <BulkLayering {...props} />
       </section>
     </ErrorBoundary>
   );

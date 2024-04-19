@@ -1010,19 +1010,24 @@ class EditorComponent extends React.Component {
     }
   };
 
-  onAreaSelectionEnd = (e) => {
+  onAreaSelectionEnd = (e, isModal = false, modalClass) => {
     const currentPageId = this.state.currentPageId;
     this.setState({ selectionInProgress: false });
     e.selected.forEach((el, index) => {
-      const id = el.getAttribute('widgetid');
-      const component = this.state.appDefinition.pages[currentPageId].components[id].component;
-      const isMultiSelect = e.inputEvent.shiftKey || (!e.isClick && index != 0);
-      this.setSelectedComponent(id, component, isMultiSelect);
+      if ((isModal && el.closest(modalClass)) || !isModal) {
+        const id = el.getAttribute('widgetid');
+        const component = this.state.appDefinition.pages[currentPageId].components[id].component;
+        const isMultiSelect = e.inputEvent?.shiftKey || (!e.isClick && index != 0);
+        this.setSelectedComponent(id, component, isMultiSelect);
+      }
     });
   };
 
   onAreaSelectionDragStart = (e) => {
-    if (e.inputEvent.target.getAttribute('id') !== 'real-canvas') {
+    if (
+      e.inputEvent.target.getAttribute('id') !== 'real-canvas' &&
+      !e.inputEvent.target.classList.contains('real-canvas')
+    ) {
       this.selectionDragRef.current = true;
     } else {
       this.selectionDragRef.current = false;
@@ -1360,6 +1365,16 @@ class EditorComponent extends React.Component {
     );
   };
 
+  onCanvasMouseUp = (e, forceDeselect = false) => {
+    if (['real-canvas', 'modal'].includes(e.target.className) || forceDeselect) {
+      this.setState({
+        selectedComponents: [],
+        currentSidebarTab: 2,
+        hoveredComponent: false,
+      });
+    }
+  };
+
   unHidePage = (pageId) => {
     const newAppDefinition = {
       ...this.state.appDefinition,
@@ -1626,7 +1641,7 @@ class EditorComponent extends React.Component {
                 apps={apps}
                 setEditorMarginLeft={this.handleEditorMarginLeftChange}
               />
-              {!showComments && (
+              {!showComments && !useAppGlobalStore.getState().isAnyModalOpen && (
                 <Selecto
                   dragContainer={'.canvas-container'}
                   selectableTargets={['.react-draggable']}
@@ -1655,22 +1670,13 @@ class EditorComponent extends React.Component {
                 <div
                   className={`canvas-container align-items-center ${!showLeftSidebar && 'hide-sidebar'}`}
                   style={{
-                    transform: `scale(${zoomLevel})`,
                     borderLeft:
                       (this.state.editorMarginLeft ? this.state.editorMarginLeft - 1 : this.state.editorMarginLeft) +
                       `px solid ${this.computeCanvasBackgroundColor()}`,
                     height: this.computeCanvasContainerHeight(),
                     background: !this.props.darkMode && '#f4f6fa',
                   }}
-                  onMouseUp={(e) => {
-                    if (['real-canvas', 'modal'].includes(e.target.className)) {
-                      this.setState({
-                        selectedComponents: [],
-                        currentSidebarTab: 2,
-                        hoveredComponent: false,
-                      });
-                    }
-                  }}
+                  onMouseUp={this.onCanvasMouseUp}
                   ref={this.canvasContainerRef}
                   // onScroll={() => {
                   //   this.selectionRef.current.checkScroll();
@@ -1678,7 +1684,7 @@ class EditorComponent extends React.Component {
                 >
                   <div style={{ minWidth: `calc((100vw - 300px) - 48px)` }}>
                     <div
-                      className="canvas-area"
+                      className="canvas-area canvas-area__editor"
                       style={{
                         width: currentLayout === 'desktop' ? '100%' : '450px',
                         minHeight: +this.state.appDefinition.globalSettings.canvasMaxHeight,
@@ -1692,7 +1698,6 @@ class EditorComponent extends React.Component {
                          **/
                         // minWidth: this.state.editorMarginLeft ? this.getCanvasMinWidth() : 'auto',
                         backgroundColor: this.computeCanvasBackgroundColor(),
-                        transform: 'translateZ(0)', //Hack to make modal position respect canvas container, else it positions w.r.t window.
                       }}
                       ref={this.getCanvasAreaElement}
                     >
@@ -1750,11 +1755,19 @@ class EditorComponent extends React.Component {
                             setSelectedComponent={this.setSelectedComponent}
                             handleUndo={this.handleUndo}
                             handleRedo={this.handleRedo}
+                            removeComponents={this.removeComponents}
                             removeComponent={this.removeComponent}
                             onComponentHover={this.handleComponentHover}
                             hoveredComponent={hoveredComponent}
                             sideBarDebugger={this.sideBarDebugger}
                             currentPageId={this.state.currentPageId}
+                            onDragStart={this.onAreaSelectionDragStart}
+                            onSelectStart={this.onAreaSelectionStart}
+                            onDragEnd={this.onAreaSelectionDragEnd}
+                            onCanvasMouseUp={this.onCanvasMouseUp}
+                            onSelectEnd={this.onAreaSelectionEnd}
+                            onDrag={this.onAreaSelectionDrag}
+                            onSelect={this.onAreaSelection}
                           />
                           <CustomDragLayer
                             snapToGrid={true}

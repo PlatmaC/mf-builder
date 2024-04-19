@@ -21,6 +21,7 @@ This license ensures that we maintain transparency and uphold the principles of 
 - Custom datasource API
 - Relations/lookup type to the built-in database
 - Generation column from current data in Table
+- Context menu
 
 #### Bug Fixed
 

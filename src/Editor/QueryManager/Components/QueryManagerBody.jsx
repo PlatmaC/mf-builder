@@ -245,12 +245,12 @@ export const QueryManagerBody = forwardRef(
           dataSources,
           staticDataSources
         )}
-        {renderDataSources(
+        {/* {renderDataSources(
           t('editor.queryManager.selectGlobalDatasource', 'Select Global Datasource'),
           globalDataSources,
           [],
           true
-        )}
+        )} */}
       </>
     );
 

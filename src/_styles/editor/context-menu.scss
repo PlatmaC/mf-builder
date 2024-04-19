@@ -1,0 +1,11 @@
+.editor {
+  &__context-menu {
+    display: flex !important;
+    flex-direction: column;
+    transition: unset !important;
+
+    &--danger {
+      color: #ff6666 !important;
+    }
+  }
+}
