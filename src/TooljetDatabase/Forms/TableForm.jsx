@@ -9,6 +9,7 @@ import { BreadCrumbContext } from '@/App/App';
 import { checkIsColumnDefaultTypeInvalid } from './TableFormHelpers';
 import { TooljetDatabaseContext } from '../index';
 import CreateColumnsForm from './ColumnsForm';
+import { tableNameRegex } from '../constants';
 
 const TableForm = ({
   selectedTable = '',
@@ -41,7 +42,6 @@ const TableForm = ({
       return false;
     }
 
-    const tableNameRegex = /^[a-zA-Z_][a-zA-Z0-9_]*$/;
     if (!tableNameRegex.test(tableName)) {
       toast.error(`Table name can only contain alphabets, numbers and underscore and shouldn't start with number.`);
       return false;
@@ -58,6 +58,11 @@ const TableForm = ({
     const columnNames = columnsInfo.map((column) => column.column_name);
     if (columnNames.some((columnName) => isEmpty(columnName))) {
       toast.error('Column names cannot be empty');
+      return;
+    }
+
+    if (columnNames.some((columnName) => !tableNameRegex.test(columnName))) {
+      toast.error(`Column names can only contain alphabets, numbers and underscore and shouldn't start with number.`);
       return;
     }
 

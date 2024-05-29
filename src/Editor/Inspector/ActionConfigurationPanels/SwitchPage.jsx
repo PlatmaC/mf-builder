@@ -4,7 +4,7 @@ import defaultStyles from '@/_ui/Select/styles';
 import { CodeHinter } from '../../CodeBuilder/CodeHinter';
 import { useTranslation } from 'react-i18next';
 
-export function SwitchPage({ getPages, currentState, event, handlerChanged, eventIndex, darkMode }) {
+export function SwitchPage({ pages, currentState, event, handlerChanged, eventIndex, darkMode }) {
   const queryParamChangeHandler = (index, key, value) => {
     event.queryParams[index][key] = value;
     handlerChanged(eventIndex, 'queryParams', event.queryParams);
@@ -49,7 +49,7 @@ export function SwitchPage({ getPages, currentState, event, handlerChanged, even
     <div className="p-1 switch-page" data-cy={`switch-page-label-and-input`}>
       <label className="form-label mt-1">{t('globals.page', 'Page')}</label>
       <Select
-        options={getPages()}
+        options={pages}
         search={true}
         value={event.pageId}
         onChange={(value) => {

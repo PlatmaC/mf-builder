@@ -48,7 +48,7 @@ export const GlobalSettings = ({
   }, [JSON.stringify(resolveReferences(backgroundFxQuery, realState))]);
 
   const popoverContent = (
-    <div id="global-settings-popover" className={cx({ 'theme-dark': darkMode })}>
+    <div id="global-settings-popover" className={cx('global-settings', { 'theme-dark': darkMode })}>
       <div bsPrefix="global-settings-popover">
         <HeaderSection darkMode={darkMode}>
           <HeaderSection.PanelHeader title="Global settings" />

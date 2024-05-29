@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import throttle from 'lodash/throttle';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 
@@ -39,15 +40,25 @@ export const RangeSlider = function RangeSlider({ height, properties, styles, se
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enableTwoHandle]);
 
-  const onSliderChange = (value) => {
-    setExposedVariable('value', value);
-    setSliderValue(value);
-  };
+  const debouncedSliderChange = useMemo(
+    () =>
+      throttle((value) => {
+        setExposedVariable('value', value);
+        setSliderValue(value);
+      }, 100),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
 
-  const onRangeChange = (value) => {
-    setExposedVariable('value', value);
-    setRangeValue(value);
-  };
+  const debouncedRangeChange = useMemo(
+    () =>
+      throttle((value) => {
+        setExposedVariable('value', value);
+        setRangeValue(value);
+      }, 100),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
 
   const rangeStyles = {
     handleStyle: toArray(sliderValue).map(() => {
@@ -70,7 +81,7 @@ export const RangeSlider = function RangeSlider({ height, properties, styles, se
           min={min}
           max={max}
           defaultValue={toArray(rangeValue)}
-          onChange={onRangeChange}
+          onChange={debouncedRangeChange}
           onAfterChange={() => fireEvent('onChange')}
           value={toArray(rangeValue)}
           ref={sliderRef}
@@ -85,7 +96,7 @@ export const RangeSlider = function RangeSlider({ height, properties, styles, se
           defaultValue={sliderValue}
           value={sliderValue}
           ref={sliderRef}
-          onChange={onSliderChange}
+          onChange={debouncedSliderChange}
           onAfterChange={() => fireEvent('onChange')}
           trackStyle={{ backgroundColor: trackColor }}
           railStyle={{ backgroundColor: lineColor }}

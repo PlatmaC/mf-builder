@@ -27,6 +27,22 @@ export const ActionTypes = [
     ],
   },
   {
+    name: 'Hide page',
+    id: 'hide-page',
+    options: [
+      { name: 'app', type: 'text', default: '' },
+      { name: 'queryParams', type: 'code', default: '[]' },
+    ],
+  },
+  {
+    name: 'Unhide page',
+    id: 'unhide-page',
+    options: [
+      { name: 'app', type: 'text', default: '' },
+      { name: 'queryParams', type: 'code', default: '[]' },
+    ],
+  },
+  {
     name: 'Show Modal',
     id: 'show-modal',
     options: [{ name: 'modal', type: 'text', default: '' }],

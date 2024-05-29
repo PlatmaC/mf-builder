@@ -9,6 +9,7 @@ import { useDataQueriesActions, useDataQueriesStore } from '@/_stores/dataQuerie
 import { useQueryPanelActions, useSelectedQuery, useUnsavedChanges } from '@/_stores/queryPanelStore';
 import { useAppVersionStore } from '@/_stores/appVersionStore';
 import { shallow } from 'zustand/shallow';
+import Copy from '@/_ui/Icon/solidIcons/Copy';
 
 export const QueryCard = ({
   dataQuery,
@@ -17,11 +18,12 @@ export const QueryCard = ({
   setDraftQuery,
   darkMode = false,
   editorRef,
+  appId,
 }) => {
   const selectedQuery = useSelectedQuery();
   const isUnsavedChangesAvailable = useUnsavedChanges();
-  const { isDeletingQueryInProcess } = useDataQueriesStore();
-  const { deleteDataQueries, renameQuery } = useDataQueriesActions();
+  const { isDeletingQueryInProcess, isCreatingQueryInProcess } = useDataQueriesStore();
+  const { deleteDataQueries, renameQuery, duplicateQuery } = useDataQueriesActions();
   const { setSelectedQuery, setSelectedDataSource, setUnSavedChanges } = useQueryPanelActions();
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const { isVersionReleased } = useAppVersionStore(
@@ -165,9 +167,24 @@ export const QueryCard = ({
                 </svg>
               </span>
             </div>
+            <div className={`col-auto rename-query`} onClick={() => duplicateQuery(dataQuery?.id, appId)}>
+              {isCreatingQueryInProcess ? (
+                <div>
+                  <div className="text-center spinner-border spinner-border-sm" role="status"></div>
+                </div>
+              ) : (
+                <span
+                  className="d-flex"
+                  data-tooltip-id="query-card-btn-tooltip"
+                  data-tooltip-content="Duplicate query"
+                >
+                  <Copy height={16} width={16} viewBox="0 5 20 20" />
+                </span>
+              )}
+            </div>
             <div className="col-auto">
               {isDeletingQueryInProcess ? (
-                <div className="px-2">
+                <div>
                   <div className="text-center spinner-border spinner-border-sm" role="status"></div>
                 </div>
               ) : (

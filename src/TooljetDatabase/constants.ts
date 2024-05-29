@@ -23,3 +23,5 @@ export const operators = [
   { value: 'in', label: 'in' },
   { value: 'is', label: 'is' },
 ];
+
+export const tableNameRegex = /^[a-zA-Z_][a-zA-Z0-9_]*$/;

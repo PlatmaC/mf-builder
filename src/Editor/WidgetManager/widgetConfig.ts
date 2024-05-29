@@ -3532,6 +3532,7 @@ export const widgets: WidgetConfigType = [
         displayName: 'Start time on week and day view',
       },
       endTime: { type: InspectorElementTypeEnum.code, displayName: 'End time on week and day view' },
+      twelveHourTimeFormat: { type: InspectorElementTypeEnum.toggle, displayName: '12-hour clock' },
       displayToolbar: { type: InspectorElementTypeEnum.toggle, displayName: 'Show toolbar' },
       displayViewSwitcher: {
         type: InspectorElementTypeEnum.toggle,
@@ -3577,14 +3578,14 @@ export const widgets: WidgetConfigType = [
       },
       properties: {
         dateFormat: {
-          value: 'MM-DD-YYYY HH:mm:ss A Z',
+          value: 'MM-DD-YYYY HH:mm:ss A',
         },
         defaultDate: {
-          value: '{{moment().format("MM-DD-YYYY HH:mm:ss A Z")}}',
+          value: '{{moment().format("MM-DD-YYYY HH:mm:ss A")}}',
         },
         events: {
           value:
-            "{{[\n\t\t{\n\t\t\t title: 'Sample event',\n\t\t\t start: `${moment().startOf('day').format('MM-DD-YYYY HH:mm:ss A Z')}`,\n\t\t\t end: `${moment().endOf('day').format('MM-DD-YYYY HH:mm:ss A Z')}`,\n\t\t\t allDay: false,\n\t\t\t color: '#4D72DA'\n\t\t}\n]}}",
+            "{{[\n\t\t{\n\t\t\t title: 'Sample event',\n\t\t\t start: `${moment().startOf('day').format('MM-DD-YYYY HH:mm:ss A')}`,\n\t\t\t end: `${moment().endOf('day').format('MM-DD-YYYY HH:mm:ss A')}`,\n\t\t\t allDay: false,\n\t\t\t color: '#4D72DA'\n\t\t}\n]}}",
         },
         resources: {
           value: '{{[]}}',
@@ -3593,10 +3594,13 @@ export const widgets: WidgetConfigType = [
           value: "{{'month'}}",
         },
         startTime: {
-          value: "{{moment().startOf('day').format('MM-DD-YYYY HH:mm:ss A Z')}}",
+          value: "{{moment().startOf('day').format('MM-DD-YYYY HH:mm:ss A')}}",
         },
         endTime: {
-          value: "{{moment().endOf('day').format('MM-DD-YYYY HH:mm:ss A Z')}}",
+          value: "{{moment().endOf('day').format('MM-DD-YYYY HH:mm:ss A')}}",
+        },
+        twelveHourTimeFormat: {
+          value: false,
         },
         displayToolbar: {
           value: true,

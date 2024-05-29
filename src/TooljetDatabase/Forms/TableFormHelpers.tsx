@@ -9,6 +9,7 @@ import { tooljetDatabaseService } from '@/_services';
 import { Any } from '@/types/GeneralTypes/Any';
 
 import { TooljetDatabaseContext } from '..';
+import { tableNameRegex } from '../constants';
 
 type CheckIsColumnDefaultTypeInvalidType = (props: {
   dataType: DataDenominationType | null;
@@ -61,6 +62,10 @@ export const isCreateColumnFormInvalid = ({
   dataType,
 }) => {
   if (isEmpty(columnName)) return Boolean(toast.error('Column name cannot be empty'));
+  if (!tableNameRegex.test(columnName))
+    return Boolean(
+      toast.error(`Column name can only contain alphabets, numbers and underscore and shouldn't start with number.`)
+    );
   else if (isEmpty(dataType)) return Boolean(toast.error('Data type cannot be empty'));
   else if ((dataType === 'relations' || dataType === 'lookup') && !selectedRelationTableName)
     return Boolean(toast.error(`Please select a table to link to`));

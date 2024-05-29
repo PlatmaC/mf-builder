@@ -1402,11 +1402,13 @@ class EditorComponent extends React.Component {
   switchPage = (pageId, queryParams = []) => {
     document.getElementById('real-canvas').scrollIntoView();
     if (
-      this.state.currentPageId === pageId &&
-      this.state.currentState.page.handle === this.state.appDefinition?.pages[pageId]?.handle
+      (this.state.currentPageId === pageId &&
+        this.state.currentState.page.handle === this.state.appDefinition?.pages[pageId]?.handle) ||
+      !this.state.appDefinition?.pages[pageId]
     ) {
       return;
     }
+
     const { name, handle, events } = this.state.appDefinition.pages[pageId];
     const currentPageId = this.state.currentPageId;
 
@@ -1600,6 +1602,7 @@ class EditorComponent extends React.Component {
           <DndProvider backend={HTML5Backend}>
             <div className="sub-section">
               <LeftSidebar
+                activeTab={this.props.activeTab}
                 showComments={showComments}
                 errorLogs={currentState.errors}
                 components={currentState.components}

@@ -49,6 +49,15 @@ export const Calendar = function ({
   const todayEndTime = moment().endOf('day').toDate();
   const startTime = properties.startTime ? parseDate(properties.startTime, properties.dateFormat) : todayStartTime;
   const endTime = properties.endTime ? parseDate(properties.endTime, properties.dateFormat) : todayEndTime;
+  const calendarFormats = {
+    timeGutterFormat: (date, culture, localizer) =>
+      localizer.format(date, properties.twelveHourTimeFormat ? 'h:mm' : 'HH:mm', culture),
+    eventTimeRangeFormat: ({ start, end }, culture, localizer) => {
+      const formattedStart = localizer.format(start, properties.twelveHourTimeFormat ? 'h:mm' : 'HH:mm', culture);
+      const formattedEnd = localizer.format(end, properties.twelveHourTimeFormat ? 'h:mm' : 'HH:mm', culture);
+      return `${formattedStart} - ${formattedEnd}`;
+    },
+  };
 
   const [currentDate, setCurrentDate] = useState(defaultDate);
   const [eventPopoverOptions, setEventPopoverOptions] = useState({ show: false });
@@ -178,6 +187,7 @@ export const Calendar = function ({
         tooltipAccessor="tooltip"
         popup={true}
         components={components}
+        formats={calendarFormats}
       />
       <CalendarEventPopover
         calendarWidgetId={id}

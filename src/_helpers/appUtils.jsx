@@ -610,6 +610,16 @@ function executeActionWithDebounce(_ref, event, mode, customVariables) {
         return actionPromise ?? Promise.resolve();
       }
 
+      case 'hide-page': {
+        _ref.hidePage(event.pageId);
+        return Promise.resolve();
+      }
+
+      case 'unhide-page': {
+        _ref.unHidePage(event.pageId);
+        return Promise.resolve();
+      }
+
       case 'switch-page': {
         _ref.switchPage(event.pageId, resolveReferences(event.queryParams, currentState, [], customVariables));
         return Promise.resolve();

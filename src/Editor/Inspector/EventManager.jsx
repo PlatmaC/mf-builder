@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { ActionTypes } from '../ActionTypes';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
@@ -14,6 +14,8 @@ import defaultStyles from '@/_ui/Select/styles';
 import { useTranslation } from 'react-i18next';
 
 import { useDataQueries } from '@/_stores/dataQueriesStore';
+
+import { HidePage } from './ActionConfigurationPanels/HidePage';
 
 export const EventManager = ({
   component,
@@ -37,9 +39,15 @@ export const EventManager = ({
     setEvents(component.component.definition.events || []);
   }, [component?.component?.definition?.events]);
 
-  let actionOptions = ActionTypes.map((action) => {
-    return { name: action.name, value: action.id };
-  });
+  const actionOptions = useMemo(() => {
+    const actionTypes = ActionTypes.map((action) => {
+      return { name: action.name, value: action.id };
+    });
+    return actionTypes.filter((actionType) => {
+      if ((actionType.value === 'hide-page' || actionType.value === 'unhide-page') && pages.length < 2) return false;
+      else return true;
+    });
+  }, [pages]);
 
   let checkIfClicksAreInsideOf = document.querySelector('#cm-complete-0');
   // Listen for click events on body
@@ -180,12 +188,21 @@ export const EventManager = ({
     return appsOptionsList;
   }
 
-  function getPageOptions() {
+  const pageOptionsForSwitch = useMemo(() => {
     return pages.map((page) => ({
       name: page.name,
       value: page.id,
     }));
-  }
+  }, [pages]);
+
+  const pageOptionsForHide = useMemo(() => {
+    return pages
+      .filter((page) => page.handle !== 'home')
+      .map((page) => ({
+        name: page.name,
+        value: page.id,
+      }));
+  }, [pages]);
 
   function handlerChanged(index, param, value) {
     let newEvents = [...events];
@@ -238,7 +255,7 @@ export const EventManager = ({
     return (
       <Popover
         id="popover-basic"
-        style={{ width: '350px', maxWidth: '350px' }}
+        style={{ width: '350px', maxWidth: '350px', zIndex: 99999 }}
         className={`${darkMode && 'popover-dark-themed theme-dark'} shadow`}
         data-cy="popover-card"
       >
@@ -521,6 +538,7 @@ export const EventManager = ({
                 </div>
               </>
             )}
+
             {event.actionId === 'set-table-page' && (
               <>
                 <div className="row">
@@ -556,6 +574,7 @@ export const EventManager = ({
                 </div>
               </>
             )}
+
             {event.actionId === 'set-custom-variable' && (
               <>
                 <div className="row">
@@ -586,6 +605,7 @@ export const EventManager = ({
                 </div>
               </>
             )}
+
             {event.actionId === 'unset-custom-variable' && (
               <>
                 <div className="row">
@@ -602,6 +622,7 @@ export const EventManager = ({
                 </div>
               </>
             )}
+
             {event.actionId === 'set-page-variable' && (
               <>
                 <div className="row">
@@ -632,6 +653,7 @@ export const EventManager = ({
                 </div>
               </>
             )}
+
             {event.actionId === 'unset-page-variable' && (
               <>
                 <div className="row">
@@ -649,16 +671,29 @@ export const EventManager = ({
                 </div>
               </>
             )}
+
+            {(event.actionId === 'hide-page' || event.actionId === 'unhide-page') && pageOptionsForHide.length > 0 && (
+              <HidePage
+                event={event}
+                handlerChanged={handlerChanged}
+                eventIndex={index}
+                pages={pageOptionsForHide}
+                currentState={currentState}
+                darkMode={darkMode}
+              />
+            )}
+
             {event.actionId === 'switch-page' && (
               <SwitchPage
                 event={event}
                 handlerChanged={handlerChanged}
                 eventIndex={index}
-                getPages={getPageOptions}
+                pages={pageOptionsForSwitch}
                 currentState={currentState}
                 darkMode={darkMode}
               />
             )}
+
             {event.actionId === 'control-component' && (
               <>
                 <div className="row">
@@ -756,6 +791,7 @@ export const EventManager = ({
                   ))}
               </>
             )}
+
             <div className="row mt-3">
               <div className="col-3 p-2">{t('editor.inspector.eventManager.debounce', 'Debounce')}</div>
               <div className="col-9" data-cy="debounce-input-field">

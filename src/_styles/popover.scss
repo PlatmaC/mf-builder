@@ -59,6 +59,11 @@
   }
 }
 
-div[data-radix-popper-content-wrapper]:has(.PopoverContent.drawer-height) {
+div[data-radix-popper-content-wrapper]:has(.PopoverContent.drawer-height):has(.global-settings) {
+  top: 23px !important;
+  left: 47px !important;
+}
+
+div[data-radix-popper-content-wrapper]:has(.PopoverContent.drawer-height):not(:has(.global-settings)) {
   transform: translate3d(47px, 117px, 0) !important;
 }

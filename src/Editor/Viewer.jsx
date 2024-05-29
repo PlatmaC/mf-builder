@@ -463,6 +463,28 @@ class ViewerComponent extends Component {
     this.props.switchDarkMode(newMode);
   };
 
+  hidePage = (pageId) => {
+    const newAppDefinition = {
+      ...this.state.appDefinition,
+      pages: {
+        ...this.state.appDefinition.pages,
+        [pageId]: { ...this.state.appDefinition.pages[pageId], hidden: true },
+      },
+    };
+    this.setState({ appDefinition: newAppDefinition });
+  };
+
+  unHidePage = (pageId) => {
+    const newAppDefinition = {
+      ...this.state.appDefinition,
+      pages: {
+        ...this.state.appDefinition.pages,
+        [pageId]: { ...this.state.appDefinition.pages[pageId], hidden: false },
+      },
+    };
+    this.setState({ appDefinition: newAppDefinition });
+  };
+
   switchPage = (id, queryParams = []) => {
     const { navigate } = this.props;
 

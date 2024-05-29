@@ -20,6 +20,7 @@ class HttpClient {
     this.namespace = args.namespace || ''; // TODO: add versioning (/v1) to all endpoints (https://docs.nestjs.com/techniques/versioning#uri-versioning-type)
     this.headers = {
       'content-type': 'application/json',
+      'Cache-Control': 'no-cache',
       ...args.headers,
     };
   }

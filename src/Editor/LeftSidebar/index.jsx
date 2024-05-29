@@ -37,6 +37,7 @@ function getCircularReplacer() {
 export const LeftSidebar = forwardRef((props, ref) => {
   const router = useRouter();
   const {
+    activeTab,
     appId,
     switchDarkMode,
     showComments,
@@ -69,7 +70,6 @@ export const LeftSidebar = forwardRef((props, ref) => {
     clonePage,
     setEditorMarginLeft,
   } = props;
-
   const dataSources = useDataSources();
   const prevSelectedSidebarItem = localStorage.getItem('selectedSidebarItem');
   const queryPanelHeight = usePanelHeight();
@@ -209,6 +209,16 @@ export const LeftSidebar = forwardRef((props, ref) => {
   const setSideBarBtnRefs = (page) => (ref) => {
     sideBarBtnRefs.current[page] = ref;
   };
+
+  useEffect(() => {
+    if (activeTab !== 'design') {
+      setSelectedSidebarItem(null);
+      setPinned(false);
+    } else {
+      setSelectedSidebarItem(prevSelectedSidebarItem);
+      setPinned(!!localStorage.getItem('selectedSidebarItem'));
+    }
+  }, [activeTab]);
 
   const SELECTED_ITEMS = {
     page: (

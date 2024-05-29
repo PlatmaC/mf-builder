@@ -12,6 +12,7 @@ import { shallow } from 'zustand/shallow';
 
 export const QueryDataPane = ({
   setSaveConfirmation,
+  appId,
   setCancelData,
   draftQuery,
   handleAddNewQuery,
@@ -114,6 +115,7 @@ export const QueryDataPane = ({
                   fetchDataQueries={fetchDataQueries}
                   darkMode={darkMode}
                   editorRef={editorRef}
+                  appId={appId}
                 />
               ) : (
                 ''
@@ -128,6 +130,7 @@ export const QueryDataPane = ({
                   fetchDataQueries={fetchDataQueries}
                   darkMode={darkMode}
                   editorRef={editorRef}
+                  appId={appId}
                 />
               ))}
             </div>

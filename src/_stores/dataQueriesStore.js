@@ -122,6 +122,50 @@ export const useDataQueriesStore = create(
               });
             });
         },
+        duplicateQuery: (id, appId) => {
+          set({ isCreatingQueryInProcess: true });
+          const { actions, selectedDataSource } = useQueryPanelStore.getState();
+          const { dataQueries } = useDataQueriesStore.getState();
+          const queryToClone = { ...dataQueries.find((query) => query.id === id) };
+          const dataSourceId = selectedDataSource.id === 'null' ? null : selectedDataSource.id;
+          const pluginId = selectedDataSource.pluginId || selectedDataSource.plugin_id;
+          let newName = queryToClone.name + '_copy';
+          const names = dataQueries.map(({ name }) => name);
+          let count = 0;
+          while (names.includes(newName)) {
+            count++;
+            newName = queryToClone.name + '_copy' + count.toString();
+          }
+          queryToClone.name = newName;
+
+          dataqueryService
+            .create(
+              appId,
+              useAppVersionStore.getState().editingVersion?.id,
+              queryToClone.name,
+              queryToClone.kind,
+              queryToClone.options,
+              dataSourceId,
+              pluginId
+            )
+            .then((data) => {
+              const query = { ...data, kind: queryToClone.kind, options: queryToClone.options };
+              actions.setUnSavedChanges(false);
+              toast.success('Query Cloned');
+              set((state) => ({
+                isCreatingQueryInProcess: false,
+                dataQueries: [query, ...state.dataQueries],
+              }));
+              actions.setSelectedQuery(data.id, { ...data, data_source_id: dataSourceId });
+            })
+            .catch(({ error }) => {
+              actions.setUnSavedChanges(false);
+              toast.error(error);
+              set({
+                isCreatingQueryInProcess: false,
+              });
+            });
+        },
         renameQuery: (id, newName, editorRef) => {
           dataqueryService
             .update(id, newName)
